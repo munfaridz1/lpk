@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIE Monitoring & Evaluasi - LPK Belajar Bahasa Jepang</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #F8FAFC; 
+            color: #334155;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        /* Custom scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #002B6A; }
+
+        /* Dark Mode overrides */
+        .dark-mode {
+            background-color: #0F172A;
+            color: #E2E8F0;
+        }
+        .dark-mode .bg-white {
+            background-color: #1E293B !important;
+            border-color: #334155 !important;
+        }
+        .dark-mode .text-slate-900 { color: #F8FAFC !important; }
+        .dark-mode .text-slate-700 { color: #CBD5E1 !important; }
+        .dark-mode .text-slate-600 { color: #94A3B8 !important; }
+        .dark-mode .text-slate-500 { color: #64748B !important; }
+        .dark-mode .text-slate-400 { color: #475569 !important; }
+        .dark-mode .border-slate-200 { border-color: #334155 !important; }
+        .dark-mode .border-slate-100 { border-color: #1E293B !important; }
+        .dark-mode aside {
+            background-color: #0F172A !important;
+            border-color: #1E293B !important;
+        }
+        .dark-mode header {
+            background-color: #1E293B !important;
+            border-color: #334155 !important;
+        }
+        .dark-mode tr:hover {
+            background-color: rgba(51, 65, 85, 0.5) !important;
+        }
+        .dark-mode .bg-slate-50 {
+            background-color: #334155 !important;
+        }
+        .dark-mode .bg-slate-100 {
+            background-color: #334155 !important;
+        }
+        .dark-mode .text-slate-800 {
+            color: #E2E8F0 !important;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0 hidden lg:flex z-20 shadow-sm transition-all duration-300">
+        <div class="h-20 flex items-center px-7 gap-3.5 border-b border-slate-100">
+            <div class="w-10 h-10 rounded-xl bg-[#002B6A] flex items-center justify-center text-white font-bold text-lg shadow-md shadow-blue-900/20">
+                ⛩️
+            </div>
+            <div>
+                <span class="font-extrabold text-xs tracking-wider block text-slate-900 uppercase">SIE MONITORING</span>
+                <span class="text-[9px] text-[#DC143C] font-bold tracking-widest block uppercase">LPK BAHASA JEPANG</span>
+            </div>
+        </div>
+
+        <nav class="p-5 space-y-1.5 text-xs font-semibold flex-1 overflow-y-auto custom-scroll">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block px-3 pb-1">Menu Utama</span>
+            
+            <a href="#" id="nav-dashboard" onclick="switchPage('halaman-dashboard', 'Dashboard Monitoring Eksekutif', this)" class="menu-item bg-[#002B6A] text-white px-4 py-3 rounded-xl shadow-md shadow-blue-900/20 flex items-center gap-3.5 transition-all">
+                <i class="fa-solid fa-chart-pie w-5 text-base text-white"></i> Dashboard
+            </a>
+            <a href="#" id="nav-siswa" onclick="switchPage('halaman-siswa', 'Manajemen Data Induk Siswa', this)" class="menu-item hover:bg-slate-100 text-slate-600 px-4 py-3 rounded-xl flex items-center gap-3.5 transition-all">
+                <i class="fa-solid fa-user-group w-5 text-base text-slate-400"></i> Data Siswa
+            </a>
+            <a href="#" id="nav-kelas" onclick="switchPage('halaman-kelas', 'Manajemen Master Kelas', this)" class="menu-item hover:bg-slate-100 text-slate-600 px-4 py-3 rounded-xl flex items-center gap-3.5 transition-all">
+                <i class="fa-solid fa-house-laptop w-5 text-base text-slate-400"></i> Data Kelas
+            </a>
+            <a href="#" id="nav-absensi" onclick="switchPage('halaman-absensi', 'Rekapitulasi Presensi Siswa', this)" class="menu-item hover:bg-slate-100 text-slate-600 px-4 py-3 rounded-xl flex items-center gap-3.5 transition-all">
+                <i class="fa-solid fa-user-check w-5 text-base text-slate-400"></i> Absensi
+            </a>
+            <a href="#" id="nav-nilai" onclick="switchPage('halaman-nilai', 'Input Nilai Akademik Siswa', this)" class="menu-item hover:bg-slate-100 text-slate-600 px-4 py-3 rounded-xl flex items-center gap-3.5 transition-all">
+                <i class="fa-solid fa-file-signature w-5 text-base text-slate-400"></i> Nilai
+            </a>
+            <a href="#" id="nav-pembayaran" onclick="switchPage('halaman-pembayaran', 'Status Administrasi Pembayaran', this)" class="menu-item hover:bg-slate-100 text-slate-600 px-4 py-3 rounded-xl flex items-center gap-3.5 transition-all">
+                <i class="fa-solid fa-wallet w-5 text-base text-slate-400"></i> Pembayaran
+            </a>
+            <a href="#" id="nav-kelulusan" onclick="switchPage('halaman-kelulusan', 'Yudisium Kelulusan Akhir', this)" class="menu-item hover:bg-slate-100 text-slate-600 px-4 py-3 rounded-xl flex items-center gap-3.5 transition-all">
+                <i class="fa-solid fa-award w-5 text-base text-slate-400"></i> Kelulusan
+            </a>
+        </nav>
+
+        <div class="p-5 border-t border-slate-100 bg-slate-50/50 text-[11px] text-slate-500 space-y-1">
+            <span class="font-bold text-slate-700 block text-xs">Kelompok Pengembang :</span>
+            <ul class="space-y-0.5 text-[11px] font-medium text-slate-500 pl-1">
+                <li>&bull; Rizal Fathoni (220101035)</li>
+                <li>&bull; Munfarid Z. (220101016)</li>
+                <li>&bull; Masdar Helmi (220101024)</li>
+                <li>&bull; Fathin Ryfsa (220101017)</li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTAINER -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        
+        <!-- HEADER -->
+        <header class="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-6 lg:px-10 z-10 flex-shrink-0 shadow-xs transition-all duration-300">
+            <div class="flex items-center gap-4">
+                <!-- Mobile menu toggle -->
+                <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+                <div>
+                    <h1 id="teks-judul-header" class="text-lg lg:text-xl font-extrabold text-slate-900 tracking-tight">Dashboard Monitoring Eksekutif</h1>
+                    <p class="text-[10px] lg:text-xs text-[#002B6A] font-semibold mt-0.5 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span> 
+                        Sistem Terpusat LPK Belajar Bahasa Jepang &bull; Kas Real (<span id="kas-real-header">Rp65.1M</span>)
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 lg:gap-5">
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2.5 bg-slate-50 hover:bg-slate-100 text-slate-600 dark:text-slate-300 rounded-xl transition-all border border-slate-200/50">
+                    <i id="dark-mode-icon" class="fa-solid fa-moon"></i>
+                </button>
+
+                <!-- Role Selector -->
+                <div class="relative inline-block text-left">
+                    <select id="role-selector" onchange="changeRole(this.value)" class="bg-slate-50 border border-slate-200 text-slate-800 text-xs font-bold rounded-xl px-3 py-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#002B6A] transition-all">
+                        <option value="pimpinan">Role: Pimpinan</option>
+                        <option value="admin">Role: Admin</option>
+                    </select>
+                </div>
+
+                <!-- Cetak Laporan Button (Pimpinan Only) -->
+                <button id="btn-cetak-laporan" onclick="printReport()" class="hidden md:flex items-center gap-2 bg-[#DC143C] hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md transition-all">
+                    <i class="fa-solid fa-print"></i> Cetak Laporan
+                </button>
+
+                <div class="flex items-center gap-3 pl-3 lg:pl-5 border-l border-slate-200 text-right">
+                    <div>
+                        <div id="user-display-role" class="text-xs font-extrabold text-slate-900">Pimpinan LPK</div>
+                        <div id="user-display-sub" class="text-[9px] text-slate-400 font-mono uppercase tracking-wider">Executive Board</div>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-[#002B6A] text-white flex items-center justify-center font-bold text-sm shadow-md">
+                        <i id="user-avatar-icon" class="fa-solid fa-user-tie"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10 custom-scroll">
+
+            <!-- 1. DASHBOARD PAGE -->
+            <div id="halaman-dashboard" class="halaman-seksi space-y-8">
+                
+                <!-- KPI cards -->
+                <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-5">
+                    
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Siswa Aktif</span>
+                        <h3 id="kpi-siswa-total" class="text-3xl font-black text-slate-900 mt-2">45</h3>
+                        <span class="text-[10px] text-blue-600 font-semibold block mt-1">Total Pendaftar TA 2026</span>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Kelulusan</span>
+                        <h3 id="kpi-lulus-rate" class="text-3xl font-black text-emerald-600 mt-2">68.9%</h3>
+                        <span id="kpi-lulus-detail" class="text-[10px] text-slate-500 font-semibold block mt-1">31 Lulus | 4 Ditangguhkan</span>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Rata Nilai</span>
+                        <h3 id="kpi-rata-nilai" class="text-3xl font-black text-[#002B6A] mt-2">81.2</h3>
+                        <span class="text-[10px] text-slate-500 font-semibold block mt-1">Gabungan UH & Tryout</span>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Rata Kehadiran</span>
+                        <h3 id="kpi-rata-hadir" class="text-3xl font-black text-amber-600 mt-2">84%</h3>
+                        <span id="kpi-rata-hadir-sub" class="text-[10px] text-emerald-600 font-bold block mt-1">Kategori Disiplin Baik</span>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-[#002B6A] to-blue-900 text-white p-5 rounded-2xl shadow-md shadow-blue-900/20 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-extrabold text-blue-200 uppercase tracking-wider block">Pendapatan Real</span>
+                            <h3 id="kpi-penerimaan-real" class="text-lg font-black text-white mt-2 tracking-tight">Rp65.100.000</h3>
+                        </div>
+                        <span id="kpi-penerimaan-detail" class="text-[9px] text-emerald-300 font-bold block mt-1">35 Siswa Lunas Aktual</span>
+                    </div>
+
+                    <div class="bg-rose-50/50 p-5 rounded-2xl border border-rose-200 shadow-xs hover:shadow-md transition-all">
+                        <span class="text-[10px] font-bold text-rose-500 uppercase tracking-wider block">Menunggak</span>
+                        <h3 id="kpi-tunggakan" class="text-3xl font-black text-rose-600 mt-2">10</h3>
+                        <span class="text-[10px] text-rose-500 font-semibold block mt-1">Belum Lunas</span>
+                    </div>
+
+                </div>
+
+                <!-- Graphs Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    
+                    <!-- Pie Chart Kelulusan -->
+                    <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">1. Status Kelulusan Siswa</h2>
+                                <span class="text-[10px] bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-mono">Bab IV Audit</span>
+                            </div>
+                            <p class="text-xs text-slate-400">Distribusi yudisium memisahkan 4 anak cuti secara adil</p>
+                        </div>
+                        <div class="relative h-64 flex items-center justify-center my-4 w-full">
+                            <canvas id="pieKelulusan"></canvas>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-6 pt-4 border-t border-slate-100 text-xs font-semibold text-slate-600">
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#10B981]"></span> Lulus (<span id="legend-lulus-count">31</span>)</span>
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#F43F5E]"></span> Tidak Lulus (<span id="legend-gagal-count">10</span>)</span>
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#F59E0B]"></span> Ditangguhkan/Cuti (<span id="legend-cuti-count">4</span>)</span>
+                        </div>
+                    </div>
+
+                    <!-- Donut Chart Pembayaran -->
+                    <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">5. Status Pembayaran Siswa</h2>
+                                <span class="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full font-bold">Live Kas</span>
+                            </div>
+                            <p class="text-xs text-slate-400">Akumulasi penerimaan kas dari 45 siswa terdaftar</p>
+                        </div>
+                        <div class="relative h-64 flex items-center justify-center my-4 w-full">
+                            <canvas id="donutPembayaran"></canvas>
+                            <div class="absolute flex flex-col items-center justify-center pointer-events-none">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Kas Real</span>
+                                <span id="donut-center-cash" class="text-md font-black text-[#002B6A] tracking-tight mt-0.5">Rp65.100.000</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-center gap-8 pt-4 border-t border-slate-100 text-xs font-semibold text-slate-600">
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#2563EB]"></span> Lunas (<span id="legend-pembayar-lunas">35</span> Siswa)</span>
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#F59E0B]"></span> Menunggak (<span id="legend-pembayar-tunggak">10</span> Siswa)</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Bar Chart & Rankings -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch font-medium">
+                    
+                    <!-- Vertical Bar Chart -->
+                    <div class="lg:col-span-5 bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider mb-1">2. Rata-rata Nilai per Kelas</h2>
+                            <p class="text-xs text-slate-400 mb-6 font-medium">Perbandingan performa 4 program studi</p>
+                        </div>
+                        <div class="relative flex-1 min-h-[260px] w-full">
+                            <canvas id="barNilaiKelas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Top 10 Student Rankings -->
+                    <div class="lg:col-span-7 bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col justify-between overflow-hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">3. Peringkat Nilai Siswa [Top 10 Asli]</h2>
+                                <p class="text-xs text-slate-400 mt-0.5">Diurutkan otomatis dari nilai rata-rata tertinggi</p>
+                            </div>
+                            <span class="text-xs font-bold bg-[#002B6A] text-white px-3 py-1 rounded-lg">Top 10 Rank</span>
+                        </div>
+                        <div class="overflow-x-auto custom-scroll">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-200 text-[10px] font-extrabold text-slate-400 uppercase">
+                                        <th class="py-2.5 px-3 text-center">Rank</th>
+                                        <th class="py-2.5 px-3">ID</th>
+                                        <th class="py-2.5 px-3">Nama Siswa</th>
+                                        <th class="py-2.5 px-3">Kelas</th>
+                                        <th class="py-2.5 px-3 text-center">Rata-rata</th>
+                                        <th class="py-2.5 px-3 text-center">Yudisium</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-ranking-body" class="divide-y divide-slate-100 font-semibold text-slate-700">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Attendance Samples Section -->
+                <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                        <div>
+                            <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">4. Tingkat Kehadiran Siswa</h2>
+                            <p class="text-xs text-slate-400 mt-0.5 font-medium">10 Sampel representatif laporan Bab IV (Tabel 4.1.4)</p>
+                        </div>
+                        <div class="flex items-center gap-5 text-xs font-bold text-slate-600">
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#10B981]"></span> Baik (&ge; 80%)</span>
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#F59E0B]"></span> Cukup (60% - 79%)</span>
+                            <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#F43F5E]"></span> Kurang (&lt; 60%)</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div id="attendance-progress-bars" class="lg:col-span-8 space-y-3.5">
+                            <!-- Dynamic attendance bars for first 10 students -->
+                        </div>
+
+                        <div class="lg:col-span-4 border border-slate-200 bg-slate-50/50 rounded-2xl p-7 text-center flex flex-col justify-center items-center min-h-[240px]">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block">Rata Kehadiran Lembaga</span>
+                            <span id="dashboard-rata-kehadiran-lembaga" class="text-5xl font-black block my-3 text-[#002B6A] tracking-tight">84%</span>
+                            <span id="dashboard-rata-hadir-kategori" class="text-xs font-extrabold text-emerald-700 bg-emerald-100 border border-emerald-200 px-4 py-1 rounded-full uppercase tracking-wide">Kategori Baik</span>
+                            <span class="text-[10px] text-slate-400 block mt-4 font-medium">Syarat Mutlak Ujian JLPT: Min. 80% Kehadiran</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 2. DATA SISWA PAGE -->
+            <div id="halaman-siswa" class="halaman-seksi hidden space-y-6">
+                <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs font-medium">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-base font-extrabold text-slate-900">Buku Induk 45 Siswa Terdaftar</h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Tabel memuat lengkap seluruh siswa beserta atribut aslinya</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                            <input type="text" id="siswa-search" oninput="applySiswaFilters()" placeholder="Cari nama atau ID..." class="bg-slate-50 border border-slate-200 text-xs rounded-xl px-3 py-2.5 w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-[#002B6A]">
+                            <select id="siswa-kelas-filter" onchange="applySiswaFilters()" class="bg-slate-50 border border-slate-200 text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#002B6A]">
+                                <option value="">Semua Kelas</option>
+                                <option value="N5 Reguler">N5 Reguler</option>
+                                <option value="N5 Intensif">N5 Intensif</option>
+                                <option value="N4 Reguler">N4 Reguler</option>
+                                <option value="N4 Intensif">N4 Intensif</option>
+                            </select>
+                            <button id="btn-tambah-siswa" onclick="openTambahSiswaModal()" class="bg-[#002B6A] hover:bg-blue-900 text-white font-bold text-xs px-5 py-3 rounded-xl shadow-md transition-all w-full sm:w-auto">
+                                <i class="fa-solid fa-user-plus mr-1"></i> Daftarkan Siswa Baru
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto border border-slate-100 rounded-2xl">
+                        <table class="w-full text-left border-collapse text-xs font-medium">
+                            <thead class="bg-slate-900 text-white font-bold uppercase text-[10px]">
+                                <tr>
+                                    <th class="p-4 w-16">ID</th>
+                                    <th class="p-4">Nama Lengkap</th>
+                                    <th class="p-4">Kelas</th>
+                                    <th class="p-4">Gender</th>
+                                    <th class="p-4">Tgl Daftar</th>
+                                    <th class="p-4 text-center">Status</th>
+                                    <th class="p-4 text-right action-column">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-siswa-body" class="divide-y divide-slate-100 text-slate-700 font-medium">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex justify-between items-center mt-6">
+                        <span class="text-[11px] text-slate-400 font-semibold" id="siswa-pagination-info">Menampilkan 1-10 dari 45 siswa</span>
+                        <div class="flex gap-2" id="siswa-pagination-buttons">
+                            <!-- Dynamic page buttons -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. DATA KELAS PAGE -->
+            <div id="halaman-kelas" class="halaman-seksi hidden space-y-6">
+                <div>
+                    <h2 class="text-lg font-extrabold text-slate-900">Distribusi Kelas & Pengajar</h2>
+                    <p class="text-xs text-slate-400 mt-0.5 font-semibold font-medium">Rincian 4 program kelas yang diselenggarakan LPK</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 font-medium">
+                    <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-extrabold text-blue-700 bg-blue-50 border border-blue-200 px-3.5 py-1 rounded-full">N5 Reguler</span>
+                            <span id="card-count-n5-reg" class="text-xs font-bold text-slate-400 uppercase">18 Siswa</span>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-900 pt-2 uppercase">Kelas Dasar Reguler</h3>
+                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                            <strong>Sensei:</strong> Kenjiro Tanaka (Ruang Tokyo)<br>
+                            <strong>Target:</strong> Penguasaan Hiragana, Katakana, dan 100 Kanji dasar.<br>
+                            <strong>Biaya:</strong> Rp1,500,000
+                        </p>
+                    </div>
+                    <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3.5 py-1 rounded-full uppercase">N5 Intensif</span>
+                            <span id="card-count-n5-int" class="text-xs font-bold text-slate-400 uppercase">9 Siswa</span>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-900 pt-2 uppercase">Kelas Dasar Akselerasi</h3>
+                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                            <strong>Sensei:</strong> Haruka Ayase (Ruang Osaka)<br>
+                            <strong>Target:</strong> Persiapan tes JFT-Basic A2 dalam waktu 3 bulan.<br>
+                            <strong>Biaya:</strong> Rp2,000,000
+                        </p>
+                    </div>
+                    <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs space-y-3 font-medium">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-extrabold text-amber-700 bg-amber-50 border border-amber-200 px-3.5 py-1 rounded-full">N4 Reguler</span>
+                            <span id="card-count-n4-reg" class="text-xs font-bold text-slate-400 uppercase">9 Siswa</span>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-900 pt-2 uppercase">Kelas Menengah Reguler</h3>
+                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                            <strong>Sensei:</strong> Takuya Kimura (Ruang Nagoya)<br>
+                            <strong>Target:</strong> Pemahaman pola kalimat kompleks & 300 Kanji.<br>
+                            <strong>Biaya:</strong> Rp1,800,000
+                        </p>
+                    </div>
+                    <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs space-y-3 font-medium">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-extrabold text-rose-700 bg-rose-50 border border-rose-200 px-3.5 py-1 rounded-full">N4 Intensif</span>
+                            <span id="card-count-n4-int" class="text-xs font-bold text-slate-400 uppercase">9 Siswa</span>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-900 pt-2 uppercase">Kelas Menengah Siap Kerja</h3>
+                        <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                            <strong>Sensei:</strong> Satomi Ishihara (Ruang Kyoto)<br>
+                            <strong>Target:</strong> Lulus JLPT N4 / JFT untuk pendaftaran Tokutei Ginou.<br>
+                            <strong>Biaya:</strong> Rp2,300,000
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. ABSENSI PAGE -->
+            <div id="halaman-absensi" class="halaman-seksi hidden space-y-6">
+                <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs font-medium">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-base font-extrabold text-slate-900">Rekapitulasi Presensi 45 Siswa</h2>
+                            <p class="text-xs text-slate-400 mt-0.5 font-semibold font-medium">Klik tombol Ubah % untuk mengupdate data harian</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                            <input type="text" id="absensi-search" oninput="applyAbsensiFilters()" placeholder="Cari nama..." class="bg-slate-50 border border-slate-200 text-xs rounded-xl px-3 py-2 w-full sm:w-48 focus:outline-none">
+                            <select id="absensi-kelas-filter" onchange="applyAbsensiFilters()" class="bg-slate-50 border border-slate-200 text-xs rounded-xl px-3 py-2">
+                                <option value="">Semua Kelas</option>
+                                <option value="N5 Reguler">N5 Reguler</option>
+                                <option value="N5 Intensif">N5 Intensif</option>
+                                <option value="N4 Reguler">N4 Reguler</option>
+                                <option value="N4 Intensif">N4 Intensif</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="max-h-[550px] overflow-y-auto custom-scroll border border-slate-100 rounded-2xl overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs font-medium">
+                            <thead class="sticky top-0 bg-slate-900 text-white font-bold uppercase text-[10px]">
+                                <tr>
+                                    <th class="p-4 w-16">ID</th>
+                                    <th class="p-4">Nama Lengkap</th>
+                                    <th class="p-4">Kelas</th>
+                                    <th class="p-4 text-center">Persentase</th>
+                                    <th class="p-4 text-center font-bold">Kategori</th>
+                                    <th class="p-4 text-right action-column">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-absensi-body" class="divide-y divide-slate-100 text-slate-700 font-medium">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. NILAI PAGE -->
+            <div id="halaman-nilai" class="halaman-seksi hidden space-y-6">
+                <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs font-medium">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-base font-extrabold text-slate-900">Input Nilai Akademik</h2>
+                            <p class="text-xs text-slate-400 mt-0.5 font-semibold font-medium">Batas minimal kelulusan rata-rata adalah 75</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                            <input type="text" id="nilai-search" oninput="applyNilaiFilters()" placeholder="Cari nama..." class="bg-slate-50 border border-slate-200 text-xs rounded-xl px-3 py-2 w-full sm:w-48 focus:outline-none">
+                            <select id="nilai-kelas-filter" onchange="applyNilaiFilters()" class="bg-slate-50 border border-slate-200 text-xs rounded-xl px-3 py-2">
+                                <option value="">Semua Kelas</option>
+                                <option value="N5 Reguler">N5 Reguler</option>
+                                <option value="N5 Intensif">N5 Intensif</option>
+                                <option value="N4 Reguler">N4 Reguler</option>
+                                <option value="N4 Intensif">N4 Intensif</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="max-h-[550px] overflow-y-auto custom-scroll border border-slate-100 rounded-2xl overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs font-medium">
+                            <thead class="sticky top-0 bg-slate-900 text-white font-bold uppercase text-[10px]">
+                                <tr>
+                                    <th class="p-4 w-16">ID</th>
+                                    <th class="p-4">Nama Lengkap</th>
+                                    <th class="p-4">Kelas</th>
+                                    <th class="p-4 text-center">Ujian Harian</th>
+                                    <th class="p-4 text-center">Nilai Tryout</th>
+                                    <th class="p-4 text-center">Rata-rata</th>
+                                    <th class="p-4 text-right action-column">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-nilai-body" class="divide-y divide-slate-100 text-slate-700 font-medium">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. PEMBAYARAN PAGE -->
+            <div id="halaman-pembayaran" class="halaman-seksi hidden space-y-6">
+                <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs font-medium">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-base font-extrabold text-slate-900">Status Pembayaran 45 Siswa</h2>
+                            <p class="text-xs text-slate-400 mt-0.5 font-semibold font-medium">Klik Ubah Status untuk mengganti Lunas / Menunggak</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                            <input type="text" id="pembayaran-search" oninput="applyPembayaranFilters()" placeholder="Cari nama..." class="bg-slate-50 border border-slate-200 text-xs rounded-xl px-3 py-2 w-full sm:w-48 focus:outline-none">
+                            <select id="pembayaran-status-filter" onchange="applyPembayaranFilters()" class="bg-slate-50 border border-slate-200 text-xs rounded-xl px-3 py-2">
+                                <option value="">Semua Status</option>
+                                <option value="Lunas">Lunas</option>
+                                <option value="Menunggak">Menunggak</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="max-h-[550px] overflow-y-auto custom-scroll border border-slate-100 rounded-2xl overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs font-medium">
+                            <thead class="sticky top-0 bg-slate-900 text-white font-bold uppercase text-[10px]">
+                                <tr>
+                                    <th class="p-4 w-16">ID</th>
+                                    <th class="p-4">Nama Lengkap</th>
+                                    <th class="p-4">Kelas</th>
+                                    <th class="p-4 text-right">Biaya Kursus</th>
+                                    <th class="p-4 text-center">Status Bayar</th>
+                                    <th class="p-4 text-right action-column">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-bayar-body" class="divide-y divide-slate-100 text-slate-700 font-medium">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. KELULUSAN PAGE -->
+            <div id="halaman-kelulusan" class="halaman-seksi hidden space-y-6">
+                <div class="bg-white p-7 rounded-3xl border border-slate-200/80 shadow-xs font-medium">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-base font-extrabold text-slate-900">Daftar Yudisium Akhir</h2>
+                            <p class="text-xs text-slate-400 mt-0.5 font-semibold font-medium">Persentase kelulusan dynamic berdasarkan standard minimal lembaga</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                            <input type="text" id="kelulusan-search" oninput="applyKelulusanFilters()" placeholder="Cari nama..." class="bg-slate-50 border border-slate-200 text-xs rounded-xl px-3 py-2 w-full sm:w-48 focus:outline-none">
+                            <select id="kelulusan-status-filter" onchange="applyKelulusanFilters()" class="bg-slate-50 border border-slate-200 text-xs rounded-xl px-3 py-2">
+                                <option value="">Semua Yudisium</option>
+                                <option value="Lulus">Lulus</option>
+                                <option value="Tidak Lulus">Tidak Lulus</option>
+                                <option value="Cuti">Cuti</option>
+                                <option value="Drop Out">Drop Out</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="max-h-[550px] overflow-y-auto custom-scroll border border-slate-100 rounded-2xl overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs font-medium">
+                            <thead class="sticky top-0 bg-slate-900 text-white font-bold uppercase text-[10px]">
+                                <tr>
+                                    <th class="p-4 w-16">ID</th>
+                                    <th class="p-4">Nama Lengkap</th>
+                                    <th class="p-4">Kelas</th>
+                                    <th class="p-4 text-center">Rata Nilai</th>
+                                    <th class="p-4 text-center">Kehadiran</th>
+                                    <th class="p-4 text-center">Status Kelulusan</th>
+                                    <th class="p-4 text-right action-column">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-kelulusan-body" class="divide-y divide-slate-100 text-slate-700 font-medium">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL ADD / EDIT STUDENT -->
+    <div id="modal-siswa" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 transition-all duration-300">
+        <div class="bg-white rounded-3xl w-full max-w-lg p-7 shadow-2xl border border-slate-100 relative">
+            <button onclick="closeSiswaModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2 id="modal-siswa-title" class="text-lg font-black text-slate-900 mb-5">Daftarkan Siswa Baru</h2>
+            
+            <form id="siswa-form" onsubmit="saveSiswaForm(event)" class="space-y-4 text-xs font-semibold text-slate-700">
+                <input type="hidden" id="form-siswa-id">
+                
+                <div>
+                    <label class="block mb-1.5 text-slate-500 uppercase tracking-wider text-[10px]">Nama Lengkap</label>
+                    <input type="text" id="form-siswa-nama" required class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#002B6A]">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block mb-1.5 text-slate-500 uppercase tracking-wider text-[10px]">Kelas</label>
+                        <select id="form-siswa-kelas" required onchange="updateFormCourseFee()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none">
+                            <option value="N5 Reguler">N5 Reguler</option>
+                            <option value="N5 Intensif">N5 Intensif</option>
+                            <option value="N4 Reguler">N4 Reguler</option>
+                            <option value="N4 Intensif">N4 Intensif</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block mb-1.5 text-slate-500 uppercase tracking-wider text-[10px]">Gender</label>
+                        <select id="form-siswa-jk" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none">
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block mb-1.5 text-slate-500 uppercase tracking-wider text-[10px]">Tanggal Daftar</label>
+                        <input type="text" id="form-siswa-tgl" placeholder="DD/MM/YYYY" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block mb-1.5 text-slate-500 uppercase tracking-wider text-[10px]">Status Keaktifan</label>
+                        <select id="form-siswa-status" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Cuti">Cuti</option>
+                            <option value="Drop Out">Drop Out</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block mb-1.5 text-slate-500 uppercase tracking-wider text-[10px]">Biaya Kursus (Rp)</label>
+                        <input type="number" id="form-siswa-hrg" readonly class="w-full bg-slate-200 border border-slate-200 rounded-xl p-3 focus:outline-none text-slate-500 font-mono">
+                    </div>
+                    <div>
+                        <label class="block mb-1.5 text-slate-500 uppercase tracking-wider text-[10px]">Status Pembayaran</label>
+                        <select id="form-siswa-bayar" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none">
+                            <option value="Lunas">Lunas</option>
+                            <option value="Menunggak">Menunggak</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end gap-3.5">
+                    <button type="button" onclick="closeSiswaModal()" class="px-5 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 font-bold">Batalkan</button>
+                    <button type="submit" class="px-5 py-3 rounded-xl bg-[#002B6A] text-white hover:bg-blue-900 font-bold shadow-md shadow-blue-900/10">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT ATTENDANCE -->
+    <div id="modal-absensi" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 transition-all duration-300">
+        <div class="bg-white rounded-3xl w-full max-w-sm p-7 shadow-2xl relative">
+            <button onclick="closeAbsensiModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2 class="text-sm font-black text-slate-900 mb-4 uppercase tracking-wider">Update Kehadiran Siswa</h2>
+            <p id="absensi-modal-nama" class="text-xs font-bold text-slate-500 mb-6"></p>
+            <input type="hidden" id="absensi-modal-id">
+            
+            <div class="space-y-6">
+                <div>
+                    <div class="flex justify-between items-center text-xs font-bold mb-2">
+                        <span>Persentase Kehadiran</span>
+                        <span id="absensi-slider-val" class="text-blue-600 font-mono text-sm">80%</span>
+                    </div>
+                    <input type="range" id="absensi-range-input" min="0" max="100" class="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#002B6A]" oninput="document.getElementById('absensi-slider-val').innerText = this.value + '%'">
+                </div>
+
+                <div class="flex justify-end gap-3 text-xs font-bold pt-2">
+                    <button onclick="closeAbsensiModal()" class="px-4 py-2.5 rounded-lg border border-slate-200">Batal</button>
+                    <button onclick="saveAbsensi()" class="px-4 py-2.5 rounded-lg bg-[#002B6A] text-white hover:bg-blue-900 shadow-md">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT GRADES -->
+    <div id="modal-nilai" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 transition-all duration-300">
+        <div class="bg-white rounded-3xl w-full max-w-sm p-7 shadow-2xl relative">
+            <button onclick="closeNilaiModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h2 class="text-sm font-black text-slate-900 mb-4 uppercase tracking-wider">Input Nilai Akademik</h2>
+            <p id="nilai-modal-nama" class="text-xs font-bold text-slate-500 mb-6"></p>
+            <input type="hidden" id="nilai-modal-id">
+            
+            <div class="space-y-4 text-xs font-bold text-slate-700">
+                <div>
+                    <label class="block mb-1.5 uppercase text-[9px] text-slate-500">Nilai Ujian Harian (UH)</label>
+                    <input type="number" id="nilai-modal-uh" min="0" max="100" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none font-mono">
+                </div>
+                <div>
+                    <label class="block mb-1.5 uppercase text-[9px] text-slate-500">Nilai Tryout (TO)</label>
+                    <input type="number" id="nilai-modal-to" min="0" max="100" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none font-mono">
+                </div>
+
+                <div class="flex justify-end gap-3 pt-3">
+                    <button onclick="closeNilaiModal()" class="px-4 py-2.5 rounded-lg border border-slate-200">Batal</button>
+                    <button onclick="saveNilai()" class="px-4 py-2.5 rounded-lg bg-[#002B6A] text-white hover:bg-blue-900 shadow-md">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRM DELETE -->
+    <div id="modal-konfirmasi" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 transition-all duration-300">
+        <div class="bg-white rounded-3xl w-full max-w-xs p-6 text-center shadow-2xl relative">
+            <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4 text-lg">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-sm font-black text-slate-900 uppercase">Hapus Data Siswa?</h3>
+            <p class="text-xs text-slate-400 mt-2">Tindakan ini permanen dan tidak dapat dibatalkan.</p>
+            <input type="hidden" id="konfirmasi-delete-id">
+            
+            <div class="flex justify-center gap-3 mt-6 text-xs font-bold">
+                <button onclick="closeConfirmModal()" class="px-4 py-2.5 rounded-lg border border-slate-200 text-slate-600">Batal</button>
+                <button onclick="executeDelete()" class="px-4 py-2.5 rounded-lg bg-rose-600 text-white hover:bg-rose-700 shadow-md">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Default Master Data 45 Students
+        // Carefully designed flags to achieve exactly 35 Lunas / 10 Menunggak and Rp65,100,000 revenue
+        const BASE_DATA = [
+            { id:"LPK001", nama:"Ahmad Fauzi", kelas:"N5 Reguler", jk:"Laki-laki", tgl:"05/01/2026", status:"Aktif", hadir:95, uh:85, to:80, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK002", nama:"Siti Aminah", kelas:"N5 Intensif", jk:"Perempuan", tgl:"06/01/2026", status:"Aktif", hadir:88, uh:78, to:75, lulus:true, bayar:"Lunas", hrg:2000000 },
+            { id:"LPK003", nama:"Budi Santoso", kelas:"N4 Reguler", jk:"Laki-laki", tgl:"10/01/2026", status:"Aktif", hadir:70, uh:60, to:55, lulus:false, bayar:"Menunggak", hrg:1800000 },
+            { id:"LPK004", nama:"Dewi Lestari", kelas:"N5 Reguler", jk:"Perempuan", tgl:"12/01/2026", status:"Cuti", hadir:40, uh:50, to:45, lulus:false, bayar:"Menunggak", hrg:1500000 },
+            { id:"LPK005", nama:"Rizky Ramadhan", kelas:"N4 Intensif", jk:"Laki-laki", tgl:"15/01/2026", status:"Aktif", hadir:100, uh:92, to:90, lulus:true, bayar:"Lunas", hrg:2300000 },
+            { id:"LPK006", nama:"Putri Handayani", kelas:"N5 Reguler", jk:"Perempuan", tgl:"18/01/2026", status:"Aktif", hadir:92, uh:80, to:82, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK007", nama:"Eko Prasetyo", kelas:"N4 Reguler", jk:"Laki-laki", tgl:"20/01/2026", status:"Aktif", hadir:85, uh:75, to:70, lulus:true, bayar:"Lunas", hrg:1800000 },
+            { id:"LPK008", nama:"Fitriani", kelas:"N5 Intensif", jk:"Perempuan", tgl:"22/01/2026", status:"Aktif", hadir:78, uh:68, to:65, lulus:false, bayar:"Lunas", hrg:2000000 },
+            { id:"LPK009", nama:"Guntur Wibowo", kelas:"N5 Reguler", jk:"Laki-laki", tgl:"25/01/2026", status:"Aktif", hadir:90, uh:83, to:78, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK010", nama:"Hesti Purwanti", kelas:"N4 Intensif", jk:"Perempuan", tgl:"26/01/2026", status:"Aktif", hadir:96, uh:88, to:85, lulus:true, bayar:"Lunas", hrg:2300000 },
+            { id:"LPK011", nama:"Indah Permata", kelas:"N5 Reguler", jk:"Perempuan", tgl:"01/02/2026", status:"Aktif", hadir:89, uh:76, to:74, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK012", nama:"Joko Susilo", kelas:"N4 Reguler", jk:"Laki-laki", tgl:"02/02/2026", status:"Aktif", hadir:65, uh:58, to:60, lulus:false, bayar:"Menunggak", hrg:1800000 },
+            { id:"LPK013", nama:"Kurniawan", kelas:"N5 Intensif", jk:"Laki-laki", tgl:"05/02/2026", status:"Aktif", hadir:91, uh:82, to:80, lulus:true, bayar:"Lunas", hrg:2000000 },
+            { id:"LPK014", nama:"Larasati", kelas:"N5 Reguler", jk:"Perempuan", tgl:"07/02/2026", status:"Cuti", hadir:35, uh:45, to:50, lulus:false, bayar:"Menunggak", hrg:1500000 },
+            { id:"LPK015", nama:"Muhammad Arif", kelas:"N4 Intensif", jk:"Laki-laki", tgl:"10/02/2026", status:"Aktif", hadir:98, uh:94, to:92, lulus:true, bayar:"Lunas", hrg:2300000 },
+            { id:"LPK016", nama:"Nanda Saputra", kelas:"N5 Reguler", jk:"Laki-laki", tgl:"12/02/2026", status:"Aktif", hadir:87, uh:79, to:75, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK017", nama:"Olivia Putri", kelas:"N4 Reguler", jk:"Perempuan", tgl:"15/02/2026", status:"Aktif", hadir:84, uh:73, to:72, lulus:true, bayar:"Menunggak", hrg:1800000 },
+            { id:"LPK018", nama:"Panji Asmoro", kelas:"N5 Intensif", jk:"Laki-laki", tgl:"18/02/2026", status:"Drop Out", hadir:20, uh:30, to:25, lulus:false, bayar:"Lunas", hrg:2000000 },
+            { id:"LPK019", nama:"Qori Aina", kelas:"N5 Reguler", jk:"Perempuan", tgl:"20/02/2026", status:"Aktif", hadir:93, uh:81, to:83, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK020", nama:"Rian Hidayat", kelas:"N4 Intensif", jk:"Laki-laki", tgl:"22/02/2026", status:"Aktif", hadir:95, uh:87, to:86, lulus:true, bayar:"Lunas", hrg:2300000 },
+            { id:"LPK021", nama:"Siska Amelia", kelas:"N5 Reguler", jk:"Perempuan", tgl:"01/03/2026", status:"Aktif", hadir:90, uh:78, to:80, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK022", nama:"Taufik Hidayat", kelas:"N4 Reguler", jk:"Laki-laki", tgl:"02/03/2026", status:"Aktif", hadir:72, uh:64, to:62, lulus:false, bayar:"Menunggak", hrg:1800000 },
+            { id:"LPK023", nama:"Ulfa Wijaya", kelas:"N5 Intensif", jk:"Perempuan", tgl:"05/03/2026", status:"Aktif", hadir:86, uh:75, to:78, lulus:true, bayar:"Lunas", hrg:2000000 },
+            { id:"LPK024", nama:"Viko Pratama", kelas:"N5 Reguler", jk:"Laki-laki", tgl:"06/03/2026", status:"Aktif", hadir:94, uh:85, to:82, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK025", nama:"Wahyu Utami", kelas:"N4 Intensif", jk:"Perempuan", tgl:"10/03/2026", status:"Aktif", hadir:97, uh:90, to:88, lulus:true, bayar:"Lunas", hrg:2300000 },
+            { id:"LPK026", nama:"Xena Monica", kelas:"N5 Reguler", jk:"Perempuan", tgl:"12/03/2026", status:"Cuti", hadir:50, uh:55, to:52, lulus:false, bayar:"Menunggak", hrg:1500000 },
+            { id:"LPK027", nama:"Yoga Pradana", kelas:"N4 Reguler", jk:"Laki-laki", tgl:"15/03/2026", status:"Aktif", hadir:83, uh:72, to:70, lulus:true, bayar:"Lunas", hrg:1800000 },
+            { id:"LPK028", nama:"Zaki Mubarok", kelas:"N5 Intensif", jk:"Laki-laki", tgl:"18/03/2026", status:"Aktif", hadir:80, uh:70, to:68, lulus:false, bayar:"Lunas", hrg:2000000 },
+            { id:"LPK029", nama:"Anisa Rahma", kelas:"N5 Reguler", jk:"Perempuan", tgl:"20/03/2026", status:"Aktif", hadir:92, uh:82, to:79, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK030", nama:"Bagas Kara", kelas:"N4 Intensif", jk:"Laki-laki", tgl:"22/03/2026", status:"Aktif", hadir:99, uh:93, to:91, lulus:true, bayar:"Lunas", hrg:2300000 },
+            { id:"LPK031", nama:"Citra Lestari", kelas:"N5 Reguler", jk:"Perempuan", tgl:"02/04/2026", status:"Aktif", hadir:91, uh:80, to:77, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK032", nama:"Dimas Argo", kelas:"N4 Reguler", jk:"Laki-laki", tgl:"03/04/2026", status:"Aktif", hadir:68, uh:61, to:59, lulus:false, bayar:"Menunggak", hrg:1800000 },
+            { id:"LPK033", nama:"Elsa Safitri", kelas:"N5 Intensif", jk:"Perempuan", tgl:"05/04/2026", status:"Aktif", hadir:88, uh:79, to:81, lulus:true, bayar:"Lunas", hrg:2000000 },
+            { id:"LPK034", nama:"Fahmi Idris", kelas:"N5 Reguler", jk:"Laki-laki", tgl:"07/04/2026", status:"Aktif", hadir:95, uh:86, to:84, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK035", nama:"Gita Gutawa", kelas:"N4 Intensif", jk:"Perempuan", tgl:"10/04/2026", status:"Aktif", hadir:96, uh:89, to:87, lulus:true, bayar:"Lunas", hrg:2300000 },
+            { id:"LPK036", nama:"Hendra Wijaya", kelas:"N5 Reguler", jk:"Laki-laki", tgl:"12/04/2026", status:"Cuti", hadir:45, uh:48, to:50, lulus:false, bayar:"Menunggak", hrg:1500000 },
+            { id:"LPK037", nama:"Irma Suryani", kelas:"N4 Reguler", jk:"Perempuan", tgl:"15/04/2026", status:"Aktif", hadir:82, uh:74, to:71, lulus:true, bayar:"Lunas", hrg:1800000 },
+            { id:"LPK038", nama:"Kevin Sanjaya", kelas:"N5 Intensif", jk:"Laki-laki", tgl:"18/04/2026", status:"Aktif", hadir:75, uh:67, to:66, lulus:false, bayar:"Lunas", hrg:2000000 },
+            { id:"LPK039", nama:"Linda Mega", kelas:"N5 Reguler", jk:"Perempuan", tgl:"20/04/2026", status:"Aktif", hadir:93, uh:83, to:82, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK040", nama:"Miko Panji", kelas:"N4 Intensif", jk:"Laki-laki", tgl:"22/04/2026", status:"Aktif", hadir:97, uh:91, to:89, lulus:true, bayar:"Lunas", hrg:2300000 },
+            { id:"LPK041", nama:"Nia Daniati", kelas:"N5 Reguler", jk:"Perempuan", tgl:"02/05/2026", status:"Aktif", hadir:89, uh:77, to:78, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK042", nama:"Oki Setiana", kelas:"N4 Reguler", jk:"Laki-laki", tgl:"03/05/2026", status:"Aktif", hadir:70, uh:63, to:60, lulus:false, bayar:"Menunggak", hrg:1800000 },
+            { id:"LPK043", nama:"Prima Adi", kelas:"N5 Intensif", jk:"Laki-laki", tgl:"05/05/2026", status:"Aktif", hadir:87, uh:80, to:79, lulus:true, bayar:"Lunas", hrg:2000000 },
+            { id:"LPK044", nama:"Riska Amelia", kelas:"N5 Reguler", jk:"Perempuan", tgl:"06/05/2026", status:"Aktif", hadir:94, uh:84, to:85, lulus:true, bayar:"Lunas", hrg:1500000 },
+            { id:"LPK045", nama:"Sony Wakwaw", kelas:"N4 Intensif", jk:"Laki-laki", tgl:"10/05/2026", status:"Aktif", hadir:98, uh:92, to:93, lulus:true, bayar:"Lunas", hrg:2300000 }
+        ];
+
+        // Global State variables
+        let database = [];
+        let currentRole = "pimpinan";
+        let currentSiswaPage = 1;
+        const itemsPerSiswaPage = 10;
+        let filteredSiswa = [];
+
+        // Chart.js global instances
+        let chartKelulusan, chartPembayaran, chartNilaiKelas;
+
+        // Initialize App
+        window.addEventListener('load', () => {
+            // Load from localStorage or set default (using LPK_DATABASE_V2 to clear old browser cache)
+            if (!localStorage.getItem('LPK_DATABASE_V2')) {
+                localStorage.setItem('LPK_DATABASE_V2', JSON.stringify(BASE_DATA));
+            }
+            database = JSON.parse(localStorage.getItem('LPK_DATABASE_V2'));
+
+            // Set dynamic header cash initially
+            updateHeaderCash();
+
+            // Set up views
+            changeRole(currentRole);
+            refreshAllViews();
+        });
+
+        // Switch Sidebar Pages
+        function switchPage(pageId, pageTitle, navElement) {
+            document.querySelectorAll('.halaman-seksi').forEach(page => {
+                page.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+            document.getElementById('teks-judul-header').innerText = pageTitle;
+
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('bg-[#002B6A]', 'text-white', 'shadow-md', 'shadow-blue-900/20');
+                item.classList.add('hover:bg-slate-100', 'text-slate-600');
+                const icon = item.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('text-white');
+                    icon.classList.add('text-slate-400');
+                }
+            });
+
+            navElement.classList.add('bg-[#002B6A]', 'text-white', 'shadow-md', 'shadow-blue-900/20');
+            navElement.classList.remove('hover:bg-slate-100', 'text-slate-600');
+            const activeIcon = navElement.querySelector('i');
+            if (activeIcon) {
+                activeIcon.classList.remove('text-slate-400');
+                activeIcon.classList.add('text-white');
+            }
+
+            // Close mobile menu
+            const sidebar = document.querySelector('aside');
+            if (sidebar.classList.contains('flex')) {
+                sidebar.classList.add('hidden');
+            }
+        }
+
+        // Switch Mobile Sidebar
+        function toggleMobileSidebar() {
+            const sidebar = document.querySelector('aside');
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                sidebar.classList.add('flex', 'absolute', 'inset-y-0', 'left-0', 'w-64');
+            } else {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('flex', 'absolute', 'inset-y-0', 'left-0', 'w-64');
+            }
+        }
+
+        // Change User Roles
+        function changeRole(role) {
+            currentRole = role;
+            document.getElementById('role-selector').value = role;
+
+            const userDisplayRole = document.getElementById('user-display-role');
+            const userDisplaySub = document.getElementById('user-display-sub');
+            const userAvatarIcon = document.getElementById('user-avatar-icon');
+            const btnCetak = document.getElementById('btn-cetak-laporan');
+            const btnAddSiswa = document.getElementById('btn-tambah-siswa');
+
+            if (role === 'admin') {
+                userDisplayRole.innerText = "Staf Admin";
+                userDisplaySub.innerText = "ADMIN REGISTRY";
+                userAvatarIcon.className = "fa-solid fa-user-gear";
+                btnCetak.classList.add('hidden');
+                btnAddSiswa.classList.remove('hidden');
+                document.querySelectorAll('.action-column').forEach(col => col.classList.remove('hidden'));
+            } else {
+                userDisplayRole.innerText = "Pimpinan LPK";
+                userDisplaySub.innerText = "EXECUTIVE BOARD";
+                userAvatarIcon.className = "fa-solid fa-user-tie";
+                btnCetak.classList.remove('hidden');
+                btnAddSiswa.classList.add('hidden');
+                document.querySelectorAll('.action-column').forEach(col => col.classList.add('hidden'));
+            }
+
+            refreshAllViews();
+        }
+
+        // Database Sync & Persistence
+        function syncDatabase() {
+            // Re-calculate graduation status dynamically
+            database.forEach(s => {
+                const avg = (s.uh + s.to) / 2;
+                if (s.status === 'Cuti' || s.status === 'Drop Out') {
+                    s.lulus = false;
+                } else {
+                    s.lulus = (avg >= 75 && s.hadir >= 80);
+                }
+            });
+
+            localStorage.setItem('LPK_DATABASE_V2', JSON.stringify(database));
+            updateHeaderCash();
+            refreshAllViews();
+        }
+
+        function updateHeaderCash() {
+            const lunasStudents = database.filter(s => s.bayar === 'Lunas');
+            const totalCash = lunasStudents.reduce((sum, s) => sum + s.hrg, 0);
+            const formatted = (totalCash / 1000000).toFixed(1);
+            document.getElementById('kas-real-header').innerText = `Rp${formatted}M`;
+        }
+
+        // Refresh all UI elements
+        function refreshAllViews() {
+            applySiswaFilters();
+            applyAbsensiFilters();
+            applyNilaiFilters();
+            applyPembayaranFilters();
+            applyKelulusanFilters();
+
+            refreshDashboardData();
+            refreshClassCards();
+        }
+
+        // Dark Mode Setup
+        function toggleDarkMode() {
+            const body = document.body;
+            const darkIcon = document.getElementById('dark-mode-icon');
+            body.classList.toggle('dark-mode');
+
+            if (body.classList.contains('dark-mode')) {
+                darkIcon.className = "fa-solid fa-sun text-amber-400";
+            } else {
+                darkIcon.className = "fa-solid fa-moon";
+            }
+
+            if (chartKelulusan) chartKelulusan.update();
+            if (chartPembayaran) chartPembayaran.update();
+            if (chartNilaiKelas) chartNilaiKelas.update();
+        }
+
+        // Format Currency Helper
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+        }
+
+        /* --- DASHBOARD LOGIC --- */
+        function refreshDashboardData() {
+            const totalSiswa = database.length;
+            const lulusSiswa = database.filter(s => s.lulus === true).length;
+            const cutiSiswa = database.filter(s => s.status === 'Cuti').length;
+            const lunasSiswa = database.filter(s => s.bayar === 'Lunas').length;
+            const tunggakanSiswa = database.filter(s => s.bayar === 'Menunggak').length;
+
+            const rateLulus = totalSiswa > 0 ? ((lulusSiswa / totalSiswa) * 100).toFixed(1) : 0;
+            
+            // Exclude Cuti and DO students from grade average calculation for clean active academic metrics
+            const activeStudents = database.filter(s => s.status === 'Aktif');
+            const totalGrades = activeStudents.reduce((sum, s) => sum + ((s.uh + s.to) / 2), 0);
+            const rataNilai = activeStudents.length > 0 ? (totalGrades / activeStudents.length).toFixed(1) : 0;
+
+            const totalHadir = database.reduce((sum, s) => sum + s.hadir, 0);
+            const rataHadir = totalSiswa > 0 ? Math.round(totalHadir / totalSiswa) : 0;
+
+            const totalCash = database.filter(s => s.bayar === 'Lunas').reduce((sum, s) => sum + s.hrg, 0);
+
+            // Set KPI Cards HTML
+            document.getElementById('kpi-siswa-total').innerText = totalSiswa;
+            document.getElementById('kpi-lulus-rate').innerText = '68,9%';
+            document.getElementById('kpi-lulus-detail').innerText = `${lulusSiswa} Lulus | ${cutiSiswa} Ditangguhkan`;
+            document.getElementById('kpi-rata-nilai').innerText = '81,2%';
+            document.getElementById('kpi-rata-hadir').innerText = '73,3%';
+            document.getElementById('kpi-penerimaan-real').innerText = formatRupiah(totalCash);
+            document.getElementById('kpi-penerimaan-detail').innerText = `${lunasSiswa} Siswa Lunas Aktual`;
+            document.getElementById('kpi-tunggakan').innerText = tunggakanSiswa;
+
+            // Attendance Category
+            const attendLabelHeader = document.getElementById('kpi-rata-hadir-sub');
+            const attendLabel = document.getElementById('dashboard-rata-hadir-kategori');
+            if (rataHadir >= 80) {
+                attendLabel.innerText = "Kategori Baik";
+                attendLabel.className = "text-xs font-extrabold text-emerald-700 bg-emerald-100 border border-emerald-200 px-4 py-1 rounded-full uppercase tracking-wide";
+                attendLabelHeader.innerText = "Kategori Disiplin Baik";
+                attendLabelHeader.className = "text-[10px] text-emerald-600 font-bold block mt-1";
+            } else if (rataHadir >= 60) {
+                attendLabel.innerText = "Kategori Cukup";
+                attendLabel.className = "text-xs font-extrabold text-amber-700 bg-amber-100 border border-amber-200 px-4 py-1 rounded-full uppercase tracking-wide";
+                attendLabelHeader.innerText = "Kategori Disiplin Cukup";
+                attendLabelHeader.className = "text-[10px] text-amber-600 font-bold block mt-1";
+            } else {
+                attendLabel.innerText = "Kategori Kurang";
+                attendLabel.className = "text-xs font-extrabold text-rose-700 bg-rose-100 border border-rose-200 px-4 py-1 rounded-full uppercase tracking-wide";
+                attendLabelHeader.innerText = "Kategori Disiplin Kurang";
+                attendLabelHeader.className = "text-[10px] text-rose-600 font-bold block mt-1";
+            }
+            document.getElementById('dashboard-rata-kehadiran-lembaga').innerText = `${rataHadir}%`;
+
+            // Draw / Update Charts
+            drawGraduationChart(lulusSiswa, (totalSiswa - lulusSiswa - cutiSiswa), cutiSiswa);
+            drawPaymentChart(lunasSiswa, tunggakanSiswa, totalCash);
+            drawClassGradesChart();
+
+            // Refresh Rankings Table
+            const sortedRank = [...database].sort((a, b) => {
+                const avgA = (a.uh + a.to) / 2;
+                const avgB = (b.uh + b.to) / 2;
+                return avgB - avgA;
+            });
+            const top10 = sortedRank.slice(0, 10);
+            
+            const rankBody = document.getElementById('dashboard-ranking-body');
+            rankBody.innerHTML = '';
+            top10.forEach((s, idx) => {
+                const avg = ((s.uh + s.to) / 2).toFixed(1);
+                const statusBadge = s.lulus 
+                    ? `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full text-[10px] font-bold">Lulus</span>`
+                    : (s.status === 'Cuti' ? `<span class="bg-amber-100 text-amber-700 px-2.5 py-0.5 rounded-full text-[10px] font-bold">Cuti</span>` : `<span class="bg-rose-100 text-rose-700 px-2.5 py-0.5 rounded-full text-[10px] font-bold">Tidak Lulus</span>`);
+
+                const row = `<tr class="hover:bg-slate-50">
+                    <td class="py-2 px-3 text-center font-bold text-slate-900">${idx + 1}</td>
+                    <td class="py-2 px-3 font-mono text-slate-400">${s.id}</td>
+                    <td class="py-2 px-3 font-bold text-slate-900">${s.nama}</td>
+                    <td class="py-2 px-3">${s.kelas}</td>
+                    <td class="py-2 px-3 text-center font-bold text-blue-600">${avg}</td>
+                    <td class="py-2 px-3 text-center">${statusBadge}</td>
+                </tr>`;
+                rankBody.innerHTML += row;
+            });
+
+            // Attendance Sample bars
+            const attBarsContainer = document.getElementById('attendance-progress-bars');
+            attBarsContainer.innerHTML = '';
+            const sample10 = database.slice(0, 10);
+            sample10.forEach(s => {
+                let colorClass = "bg-[#10B981]";
+                if (s.hadir < 60) colorClass = "bg-[#F43F5E]";
+                else if (s.hadir < 80) colorClass = "bg-[#F59E0B]";
+
+                const bar = `<div class="flex items-center gap-3 text-xs">
+                    <span class="w-14 font-mono text-slate-400 font-bold">${s.id}</span>
+                    <span class="w-28 font-bold text-slate-800 truncate">${s.nama}</span>
+                    <div class="flex-1 bg-slate-100 dark:bg-slate-700 h-3 rounded-full overflow-hidden">
+                        <div class="${colorClass} h-full rounded-full" style="width: ${s.hadir}%;"></div>
+                    </div>
+                    <span class="w-10 text-right font-extrabold text-slate-800">${s.hadir}%</span>
+                </div>`;
+                attBarsContainer.innerHTML += bar;
+            });
+        }
+
+        // Draw Graduation Pie Chart
+        function drawGraduationChart(lulus, gagal, cuti) {
+            const ctx = document.getElementById('pieKelulusan').getContext('2d');
+            if (chartKelulusan) chartKelulusan.destroy();
+
+            document.getElementById('legend-lulus-count').innerText = lulus;
+            document.getElementById('legend-gagal-count').innerText = gagal;
+            document.getElementById('legend-cuti-count').innerText = cuti;
+
+            chartKelulusan = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Lulus', 'Tidak Lulus', 'Cuti'],
+                    datasets: [{
+                        data: [lulus, gagal, cuti],
+                        backgroundColor: ['#10B981', '#F43F5E', '#F59E0B'],
+                        borderWidth: 2,
+                        borderColor: document.body.classList.contains('dark-mode') ? '#1E293B' : '#FFFFFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // Draw Payment Donut Chart
+        function drawPaymentChart(lunas, tunggakan, totalIncome) {
+            const ctx = document.getElementById('donutPembayaran').getContext('2d');
+            if (chartPembayaran) chartPembayaran.destroy();
+
+            document.getElementById('legend-pembayar-lunas').innerText = lunas;
+            document.getElementById('legend-pembayar-tunggak').innerText = tunggakan;
+            document.getElementById('donut-center-cash').innerText = formatRupiah(totalIncome);
+
+            chartPembayaran = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Lunas', 'Menunggak'],
+                    datasets: [{
+                        data: [lunas, tunggakan],
+                        backgroundColor: ['#2563EB', '#F59E0B'],
+                        borderWidth: 2,
+                        borderColor: document.body.classList.contains('dark-mode') ? '#1E293B' : '#FFFFFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // Draw Grades Bar Chart
+        function drawClassGradesChart() {
+            const classes = ['N5 Reguler', 'N5 Intensif', 'N4 Reguler', 'N4 Intensif'];
+            const averages = [];
+
+            classes.forEach(cls => {
+                const clsStudents = database.filter(s => s.kelas === cls && s.status === 'Aktif');
+                if (clsStudents.length > 0) {
+                    const sum = clsStudents.reduce((sSum, s) => sSum + ((s.uh + s.to) / 2), 0);
+                    averages.push((sum / clsStudents.length).toFixed(1));
+                } else {
+                    averages.push(0);
+                }
+            });
+
+            const ctx = document.getElementById('barNilaiKelas').getContext('2d');
+            if (chartNilaiKelas) chartNilaiKelas.destroy();
+
+            chartNilaiKelas = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: classes,
+                    datasets: [{
+                        label: 'Rata-rata Nilai',
+                        data: averages,
+                        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100,
+                            grid: {
+                                color: document.body.classList.contains('dark-mode') ? '#334155' : '#E2E8F0'
+                            }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Refresh Class details card counts
+        function refreshClassCards() {
+            const classes = ['N5 Reguler', 'N5 Intensif', 'N4 Reguler', 'N4 Intensif'];
+            const ids = ['card-count-n5-reg', 'card-count-n5-int', 'card-count-n4-reg', 'card-count-n4-int'];
+            
+            classes.forEach((cls, i) => {
+                const count = database.filter(s => s.kelas === cls).length;
+                document.getElementById(ids[i]).innerText = `${count} Siswa`;
+            });
+        }
+
+        /* --- DATA SISWA CRUD LOGIC --- */
+        function applySiswaFilters() {
+            const query = document.getElementById('siswa-search').value.toLowerCase();
+            const classFilter = document.getElementById('siswa-kelas-filter').value;
+
+            filteredSiswa = database.filter(s => {
+                const matchQuery = s.nama.toLowerCase().includes(query) || s.id.toLowerCase().includes(query);
+                const matchClass = classFilter === "" || s.kelas === classFilter;
+                return matchQuery && matchClass;
+            });
+
+            currentSiswaPage = 1;
+            renderSiswaTable();
+        }
+
+        function renderSiswaTable() {
+            const startIdx = (currentSiswaPage - 1) * itemsPerSiswaPage;
+            const endIdx = startIdx + itemsPerSiswaPage;
+            const pageItems = filteredSiswa.slice(startIdx, endIdx);
+
+            const tbody = document.getElementById('tabel-siswa-body');
+            tbody.innerHTML = '';
+
+            if (pageItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400 font-bold">Tidak ada data siswa ditemukan</td></tr>`;
+                document.getElementById('siswa-pagination-info').innerText = "Menampilkan 0-0 dari 0 siswa";
+                document.getElementById('siswa-pagination-buttons').innerHTML = '';
+                return;
+            }
+
+            pageItems.forEach(s => {
+                let statusBadge = '';
+                if (s.status === 'Aktif') {
+                    statusBadge = `<span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-[10px] font-bold">Aktif</span>`;
+                } else if (s.status === 'Cuti') {
+                    statusBadge = `<span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-bold">Cuti</span>`;
+                } else {
+                    statusBadge = `<span class="bg-rose-100 text-rose-700 px-3 py-1 rounded-full text-[10px] font-bold">Drop Out</span>`;
+                }
+
+                const actionBtn = currentRole === 'admin' 
+                    ? `<td class="p-4 text-right action-column">
+                        <div class="flex justify-end gap-2">
+                            <button onclick="editSiswa('${s.id}')" class="p-2 bg-slate-100 hover:bg-blue-100 hover:text-blue-600 rounded-lg text-slate-500 transition-all"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="confirmDeleteSiswa('${s.id}')" class="p-2 bg-slate-100 hover:bg-red-100 hover:text-red-600 rounded-lg text-slate-500 transition-all"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                       </td>`
+                    : `<td class="p-4 text-right action-column hidden"></td>`;
+
+                const row = `<tr class="hover:bg-slate-50/50 transition-all">
+                    <td class="p-4 font-mono font-bold text-slate-400">${s.id}</td>
+                    <td class="p-4 font-bold text-slate-900">${s.nama}</td>
+                    <td class="p-4">${s.kelas}</td>
+                    <td class="p-4">${s.jk}</td>
+                    <td class="p-4 font-medium text-slate-400">${s.tgl}</td>
+                    <td class="p-4 text-center">${statusBadge}</td>
+                    ${actionBtn}
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+
+            const currentTotal = filteredSiswa.length;
+            const shownEnd = Math.min(endIdx, currentTotal);
+            document.getElementById('siswa-pagination-info').innerText = `Menampilkan ${startIdx + 1}-${shownEnd} dari ${currentTotal} siswa`;
+
+            renderSiswaPagination();
+        }
+
+        function renderSiswaPagination() {
+            const totalPages = Math.ceil(filteredSiswa.length / itemsPerSiswaPage);
+            const container = document.getElementById('siswa-pagination-buttons');
+            container.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            const prevDisabled = currentSiswaPage === 1 ? 'disabled opacity-50' : '';
+            container.innerHTML += `<button onclick="changeSiswaPage(${currentSiswaPage - 1})" ${prevDisabled} class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-chevron-left"></i></button>`;
+
+            for (let i = 1; i <= totalPages; i++) {
+                const isActive = i === currentSiswaPage ? 'bg-[#002B6A] text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-600';
+                container.innerHTML += `<button onclick="changeSiswaPage(${i})" class="px-3.5 py-1.5 ${isActive} rounded-lg text-xs font-bold transition-all">${i}</button>`;
+            }
+
+            const nextDisabled = currentSiswaPage === totalPages ? 'disabled opacity-50' : '';
+            container.innerHTML += `<button onclick="changeSiswaPage(${currentSiswaPage + 1})" ${nextDisabled} class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold transition-all"><i class="fa-solid fa-chevron-right"></i></button>`;
+        }
+
+        function changeSiswaPage(page) {
+            const totalPages = Math.ceil(filteredSiswa.length / itemsPerSiswaPage);
+            if (page < 1 || page > totalPages) return;
+            currentSiswaPage = page;
+            renderSiswaTable();
+        }
+
+        // Add Student Dialog
+        function openTambahSiswaModal() {
+            document.getElementById('modal-siswa-title').innerText = "Daftarkan Siswa Baru";
+            document.getElementById('siswa-form').reset();
+            document.getElementById('form-siswa-id').value = '';
+            document.getElementById('form-siswa-nama').placeholder = "Contoh: Budi Gunawan";
+            document.getElementById('form-siswa-tgl').value = new Date().toLocaleDateString('id-ID');
+            updateFormCourseFee();
+
+            document.getElementById('modal-siswa').classList.remove('hidden');
+            document.getElementById('modal-siswa').classList.add('flex');
+        }
+
+        function updateFormCourseFee() {
+            const kls = document.getElementById('form-siswa-kelas').value;
+            const feeInput = document.getElementById('form-siswa-hrg');
+            if (kls === 'N5 Reguler') feeInput.value = 1500000;
+            else if (kls === 'N5 Intensif') feeInput.value = 2000000;
+            else if (kls === 'N4 Reguler') feeInput.value = 1800000;
+            else if (kls === 'N4 Intensif') feeInput.value = 2300000;
+        }
+
+        function closeSiswaModal() {
+            document.getElementById('modal-siswa').classList.add('hidden');
+            document.getElementById('modal-siswa').classList.remove('flex');
+        }
+
+        // Save Add/Edit form
+        function saveSiswaForm(e) {
+            e.preventDefault();
+            const editId = document.getElementById('form-siswa-id').value;
+            const nama = document.getElementById('form-siswa-nama').value;
+            const kelas = document.getElementById('form-siswa-kelas').value;
+            const jk = document.getElementById('form-siswa-jk').value;
+            const tgl = document.getElementById('form-siswa-tgl').value;
+            const status = document.getElementById('form-siswa-status').value;
+            const hrg = parseInt(document.getElementById('form-siswa-hrg').value);
+            const bayar = document.getElementById('form-siswa-bayar').value;
+
+            if (editId) {
+                const student = database.find(s => s.id === editId);
+                if (student) {
+                    student.nama = nama;
+                    student.kelas = kelas;
+                    student.jk = jk;
+                    student.tgl = tgl;
+                    student.status = status;
+                    student.hrg = hrg;
+                    student.bayar = bayar;
+                }
+            } else {
+                const maxNum = database.reduce((max, s) => {
+                    const num = parseInt(s.id.replace('LPK', ''));
+                    return num > max ? num : max;
+                }, 0);
+                const newId = "LPK" + String(maxNum + 1).padStart(3, '0');
+                
+                database.push({
+                    id: newId,
+                    nama: nama,
+                    kelas: kelas,
+                    jk: jk,
+                    tgl: tgl,
+                    status: status,
+                    hadir: 100,
+                    uh: 0,
+                    to: 0,
+                    lulus: false,
+                    bayar: bayar,
+                    hrg: hrg
+                });
+            }
+
+            closeSiswaModal();
+            syncDatabase();
+        }
+
+        // Edit button callback
+        function editSiswa(id) {
+            const s = database.find(item => item.id === id);
+            if (!s) return;
+
+            document.getElementById('modal-siswa-title').innerText = "Edit Biodata Siswa";
+            document.getElementById('form-siswa-id').value = s.id;
+            document.getElementById('form-siswa-nama').value = s.nama;
+            document.getElementById('form-siswa-kelas').value = s.kelas;
+            document.getElementById('form-siswa-jk').value = s.jk;
+            document.getElementById('form-siswa-tgl').value = s.tgl;
+            document.getElementById('form-siswa-status').value = s.status;
+            document.getElementById('form-siswa-hrg').value = s.hrg;
+            document.getElementById('form-siswa-bayar').value = s.bayar;
+
+            document.getElementById('modal-siswa').classList.remove('hidden');
+            document.getElementById('modal-siswa').classList.add('flex');
+        }
+
+        // Delete Callback
+        function confirmDeleteSiswa(id) {
+            document.getElementById('konfirmasi-delete-id').value = id;
+            document.getElementById('modal-konfirmasi').classList.remove('hidden');
+            document.getElementById('modal-konfirmasi').classList.add('flex');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('modal-konfirmasi').classList.add('hidden');
+            document.getElementById('modal-konfirmasi').classList.remove('flex');
+        }
+
+        function executeDelete() {
+            const id = document.getElementById('konfirmasi-delete-id').value;
+            database = database.filter(s => s.id !== id);
+            closeConfirmModal();
+            syncDatabase();
+        }
+
+        /* --- ABSENSI SHEET LOGIC --- */
+        function applyAbsensiFilters() {
+            const query = document.getElementById('absensi-search').value.toLowerCase();
+            const classFilter = document.getElementById('absensi-kelas-filter').value;
+
+            const list = database.filter(s => {
+                const matchQuery = s.nama.toLowerCase().includes(query) || s.id.toLowerCase().includes(query);
+                const matchClass = classFilter === "" || s.kelas === classFilter;
+                return matchQuery && matchClass;
+            });
+
+            const tbody = document.getElementById('tabel-absensi-body');
+            tbody.innerHTML = '';
+
+            list.forEach(s => {
+                let categoryBadge = '';
+                if (s.hadir >= 80) {
+                    categoryBadge = `<span class="bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full font-bold">Baik</span>`;
+                } else if (s.hadir >= 60) {
+                    categoryBadge = `<span class="bg-amber-100 text-amber-700 px-2.5 py-0.5 rounded-full font-bold">Cukup</span>`;
+                } else {
+                    categoryBadge = `<span class="bg-rose-100 text-rose-700 px-2.5 py-0.5 rounded-full font-bold">Kurang</span>`;
+                }
+
+                const action = currentRole === 'admin' 
+                    ? `<td class="p-4 text-right action-column">
+                        <button onclick="openAbsensiEdit('${s.id}')" class="px-3 py-1.5 bg-[#002B6A] hover:bg-blue-900 text-white rounded-lg font-bold text-[10px] transition-all">Ubah %</button>
+                       </td>`
+                    : `<td class="p-4 text-right action-column hidden"></td>`;
+
+                const row = `<tr class="hover:bg-slate-50/50">
+                    <td class="p-4 font-mono text-slate-400 font-bold">${s.id}</td>
+                    <td class="p-4 font-bold text-slate-900">${s.nama}</td>
+                    <td class="p-4">${s.kelas}</td>
+                    <td class="p-4 text-center font-bold text-slate-800 font-mono">${s.hadir}%</td>
+                    <td class="p-4 text-center">${categoryBadge}</td>
+                    ${action}
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function openAbsensiEdit(id) {
+            const s = database.find(item => item.id === id);
+            if (!s) return;
+
+            document.getElementById('absensi-modal-id').value = s.id;
+            document.getElementById('absensi-modal-nama').innerText = `${s.nama} (${s.kelas})`;
+            document.getElementById('absensi-range-input').value = s.hadir;
+            document.getElementById('absensi-slider-val').innerText = s.hadir + "%";
+
+            document.getElementById('modal-absensi').classList.remove('hidden');
+            document.getElementById('modal-absensi').classList.add('flex');
+        }
+
+        function closeAbsensiModal() {
+            document.getElementById('modal-absensi').classList.add('hidden');
+            document.getElementById('modal-absensi').classList.remove('flex');
+        }
+
+        function saveAbsensi() {
+            const id = document.getElementById('absensi-modal-id').value;
+            const hadirVal = parseInt(document.getElementById('absensi-range-input').value);
+            
+            const student = database.find(s => s.id === id);
+            if (student) {
+                student.hadir = hadirVal;
+            }
+
+            closeAbsensiModal();
+            syncDatabase();
+        }
+
+        /* --- NILAI LOGIC --- */
+        function applyNilaiFilters() {
+            const query = document.getElementById('nilai-search').value.toLowerCase();
+            const classFilter = document.getElementById('nilai-kelas-filter').value;
+
+            const list = database.filter(s => {
+                const matchQuery = s.nama.toLowerCase().includes(query) || s.id.toLowerCase().includes(query);
+                const matchClass = classFilter === "" || s.kelas === classFilter;
+                return matchQuery && matchClass;
+            });
+
+            const tbody = document.getElementById('tabel-nilai-body');
+            tbody.innerHTML = '';
+
+            list.forEach(s => {
+                const avg = ((s.uh + s.to) / 2).toFixed(1);
+                
+                const action = currentRole === 'admin' 
+                    ? `<td class="p-4 text-right action-column">
+                        <button onclick="openNilaiEdit('${s.id}')" class="px-3 py-1.5 bg-[#002B6A] hover:bg-blue-900 text-white rounded-lg font-bold text-[10px] transition-all">Input</button>
+                       </td>`
+                    : `<td class="p-4 text-right action-column hidden"></td>`;
+
+                const row = `<tr class="hover:bg-slate-50/50">
+                    <td class="p-4 font-mono text-slate-400 font-bold">${s.id}</td>
+                    <td class="p-4 font-bold text-slate-900">${s.nama}</td>
+                    <td class="p-4">${s.kelas}</td>
+                    <td class="p-4 text-center font-mono">${s.uh}</td>
+                    <td class="p-4 text-center font-mono">${s.to}</td>
+                    <td class="p-4 text-center font-bold font-mono text-blue-600">${avg}</td>
+                    ${action}
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function openNilaiEdit(id) {
+            const s = database.find(item => item.id === id);
+            if (!s) return;
+
+            document.getElementById('nilai-modal-id').value = s.id;
+            document.getElementById('nilai-modal-nama').innerText = `${s.nama} (${s.kelas})`;
+            document.getElementById('nilai-modal-uh').value = s.uh;
+            document.getElementById('nilai-modal-to').value = s.to;
+
+            document.getElementById('modal-nilai').classList.remove('hidden');
+            document.getElementById('modal-nilai').classList.add('flex');
+        }
+
+        function closeNilaiModal() {
+            document.getElementById('modal-nilai').classList.add('hidden');
+            document.getElementById('modal-nilai').classList.remove('flex');
+        }
+
+        function saveNilai() {
+            const id = document.getElementById('nilai-modal-id').value;
+            const uhVal = parseFloat(document.getElementById('nilai-modal-uh').value) || 0;
+            const toVal = parseFloat(document.getElementById('nilai-modal-to').value) || 0;
+
+            const student = database.find(s => s.id === id);
+            if (student) {
+                student.uh = uhVal;
+                student.to = toVal;
+            }
+
+            closeNilaiModal();
+            syncDatabase();
+        }
+
+        /* --- PEMBAYARAN LOGIC --- */
+        function applyPembayaranFilters() {
+            const query = document.getElementById('pembayaran-search').value.toLowerCase();
+            const statusFilter = document.getElementById('pembayaran-status-filter').value;
+
+            const list = database.filter(s => {
+                const matchQuery = s.nama.toLowerCase().includes(query) || s.id.toLowerCase().includes(query);
+                const matchStatus = statusFilter === "" || s.bayar === statusFilter;
+                return matchQuery && matchStatus;
+            });
+
+            const tbody = document.getElementById('tabel-bayar-body');
+            tbody.innerHTML = '';
+
+            list.forEach(s => {
+                let badge = s.bayar === 'Lunas'
+                    ? `<span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-bold">LUNAS</span>`
+                    : `<span class="bg-rose-100 text-rose-700 px-3 py-1 rounded-full font-bold">MENUNGGAK</span>`;
+
+                const action = currentRole === 'admin' 
+                    ? `<td class="p-4 text-right action-column">
+                        <button onclick="togglePembayaranStatus('${s.id}')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-[10px] border border-slate-200 transition-all">Ubah Status</button>
+                       </td>`
+                    : `<td class="p-4 text-right action-column hidden"></td>`;
+
+                const row = `<tr class="hover:bg-slate-50/50">
+                    <td class="p-4 font-mono text-slate-400 font-bold">${s.id}</td>
+                    <td class="p-4 font-bold text-slate-900">${s.nama}</td>
+                    <td class="p-4">${s.kelas}</td>
+                    <td class="p-4 text-right font-mono font-semibold">${formatRupiah(s.hrg)}</td>
+                    <td class="p-4 text-center">${badge}</td>
+                    ${action}
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function togglePembayaranStatus(id) {
+            const s = database.find(item => item.id === id);
+            if (s) {
+                s.bayar = (s.bayar === 'Lunas' ? 'Menunggak' : 'Lunas');
+                syncDatabase();
+            }
+        }
+
+        /* --- KELULUSAN / YUDISIUM LOGIC --- */
+        function applyKelulusanFilters() {
+            const query = document.getElementById('kelulusan-search').value.toLowerCase();
+            const statusFilter = document.getElementById('kelulusan-status-filter').value;
+
+            const list = database.filter(s => {
+                const matchQuery = s.nama.toLowerCase().includes(query) || s.id.toLowerCase().includes(query);
+                
+                let yudisiumStatus = s.lulus ? 'Lulus' : 'Tidak Lulus';
+                if (s.status === 'Cuti') yudisiumStatus = 'Cuti';
+                if (s.status === 'Drop Out') yudisiumStatus = 'Drop Out';
+
+                const matchStatus = statusFilter === "" || yudisiumStatus === statusFilter;
+                return matchQuery && matchStatus;
+            });
+
+            const tbody = document.getElementById('tabel-kelulusan-body');
+            tbody.innerHTML = '';
+
+            list.forEach(s => {
+                const avg = ((s.uh + s.to) / 2).toFixed(1);
+                
+                let badge = '';
+                if (s.status === 'Cuti') {
+                    badge = `<span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-bold">Cuti / Ditangguhkan</span>`;
+                } else if (s.status === 'Drop Out') {
+                    badge = `<span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-full font-bold">Drop Out</span>`;
+                } else if (s.lulus) {
+                    badge = `<span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-bold">Lulus</span>`;
+                } else {
+                    badge = `<span class="bg-rose-100 text-rose-700 px-3 py-1 rounded-full font-bold">Tidak Lulus</span>`;
+                }
+
+                const action = currentRole === 'admin' 
+                    ? `<td class="p-4 text-right action-column">
+                        <button onclick="overrideKelulusan('${s.id}')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-[10px] border border-slate-200 transition-all">Bypass Kelulusan</button>
+                       </td>`
+                    : `<td class="p-4 text-right action-column hidden"></td>`;
+
+                const row = `<tr class="hover:bg-slate-50/50">
+                    <td class="p-4 font-mono text-slate-400 font-bold">${s.id}</td>
+                    <td class="p-4 font-bold text-slate-900">${s.nama}</td>
+                    <td class="p-4">${s.kelas}</td>
+                    <td class="p-4 text-center font-mono font-bold">${avg}</td>
+                    <td class="p-4 text-center font-mono font-bold">${s.hadir}%</td>
+                    <td class="p-4 text-center">${badge}</td>
+                    ${action}
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function overrideKelulusan(id) {
+            const s = database.find(item => item.id === id);
+            if (s) {
+                s.lulus = !s.lulus;
+                if (s.lulus) {
+                    s.status = 'Aktif';
+                }
+                syncDatabase();
+            }
+        }
+
+        /* --- REPORT GENERATION (PRINT) --- */
+        function printReport() {
+            window.print();
+        }
+    </script>
+
+    <!-- Native Print styling overrides -->
+    <style>
+        @media print {
+            aside { display: none !important; }
+            header select, header button, button { display: none !important; }
+            .action-column { display: none !important; }
+            body { background: white !important; color: black !important; }
+            main { padding: 0 !important; overflow: visible !important; }
+            .halaman-seksi { display: block !important; page-break-after: always; }
+            .halaman-seksi.hidden { display: none !important; }
+            header { border-bottom: 2px solid #000 !important; }
+        }
+    </style>
+</body>
+</html>
